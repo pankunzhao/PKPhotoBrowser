@@ -92,8 +92,6 @@
         
         __weak typeof(self) weakSelf = self;
         _thumbnailView = [[PKThumbnailView alloc]initWithThumbImgsUrl:self.thumbImgsUrl count:_count clickAfterBlock:^(UIImageView *thumbImg, NSInteger index) {
-#warning 用来对点击之后的小图放大显示回调
-            NSLog(@"------>点击索引： %d",index);
 
             PKPhotoHDViewController *vC = [[PKPhotoHDViewController alloc]init];
             vC.thumbFrames = weakSelf.thumbnailView.subImgVsPoint;
@@ -102,7 +100,7 @@
             vC.thumbImgs = weakSelf.thumbnailView.subImgs;
             vC.screenshot = [self _screenshotFromView:[UIApplication sharedApplication].keyWindow];
             
-            [self.pk_superViewController presentViewController:vC animated:NO completion:^{
+            [self.pk_superViewController presentViewController:vC animated:YES completion:^{
                 NSLog(@"跳转到 新界面");
             }];
         }];

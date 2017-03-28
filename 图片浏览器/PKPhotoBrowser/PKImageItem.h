@@ -13,8 +13,8 @@
 //代理 或者Block
 typedef void (^tapImgVBlock)(UIImageView *imagV, int index);
 typedef void (^longPressImgVBlock)(UIImageView *imagV,
-                                 UIGestureRecognizerState longPressState,
-                                 BOOL isExitHD);
+                                   UIGestureRecognizerState longPressState,
+                                   BOOL isExitHD);
 
 
 
@@ -32,4 +32,9 @@ typedef void (^longPressImgVBlock)(UIImageView *imagV,
                     index:(int) index
                  tapBlock:(tapImgVBlock) block
                 longPress:(longPressImgVBlock) longPressBlock;
+
+
+- (void)savePhoto;
+
+
 @end

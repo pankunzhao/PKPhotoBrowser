@@ -19,7 +19,10 @@
 
 @property (nonatomic,strong) PKImageBrowserFlowLayout* flowLayout;
 @property (nonatomic,strong) UICollectionView* collectionView;
+
 @property (nonatomic,strong) PKPhotoBrowserPageControl* pageControl;
+@property (nonatomic,strong) UIButton *savePhotoButton;
+@property (nonatomic,strong) UILabel *showCurPhotoNum;
 
 @property (nonatomic,strong) UIImageView *screenShotImgV;
 
@@ -35,6 +38,8 @@
     [self.view addSubview:self.screenShotImgV];
     [self.screenShotImgV addSubview:self.collectionView];
     [self.view addSubview:self.pageControl];
+    [self.view addSubview:self.savePhotoButton];
+    [self.view addSubview:self.showCurPhotoNum];
 
 }
 
@@ -45,6 +50,12 @@
     //设置 进来后显示的Cell
     [self.collectionView setContentOffset:
      CGPointMake(self.currentIndex * kImageBrowserWidth, 0.0f) animated:NO];
+    
+    //设置
+    self.showCurPhotoNum.frame = CGRectMake(20, SCREEN_HEIGHT - ShowCurPhotoIndexH*ScreenScaleH, ShowCurPhotoIndexW*ScreenScaleW, ShowCurPhotoIndexH*ScreenScaleH);
+    
+    self.savePhotoButton.frame = CGRectMake(SCREEN_WIDTH - SavePhotoBtnW*ScreenScaleW, SCREEN_HEIGHT - ShowCurPhotoIndexH*ScreenScaleH, ShowCurPhotoIndexW*ScreenScaleW, ShowCurPhotoIndexH*ScreenScaleH);
+    
 }
 
 
@@ -113,14 +124,23 @@
 #pragma mark scrollViewDelegate
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView;
 {
-    
     //获取当前 位置
     CGFloat offsetX = scrollView.contentOffset.x;
-    
     int index = offsetX/SCREEN_WIDTH;
-    
     self.currentIndex = index;
 }
+
+
+#pragma mark - private
+
+- (void)clickSavePhotoButton:(UIButton *)btn
+{
+    DLog(@"");
+    //获取当前cell
+    PKHDImgCell *cell = self.collectionView.visibleCells[0];
+    [cell savePhoto];
+}
+
 
 
 #pragma mark - lazy
@@ -168,6 +188,7 @@
 {
     _currentIndex = currentIndex;
     self.pageControl.currentPage = _currentIndex;
+    self.showCurPhotoNum.text = [NSString stringWithFormat:@"%d/%lu",currentIndex + 1,(unsigned long)self.HDImgsUrl.count];
 }
 
 
@@ -184,6 +205,35 @@
     
     return _screenShotImgV;
 }
+
+- (UIButton *)savePhotoButton
+{
+    if(_savePhotoButton == nil)
+    {
+        _savePhotoButton = [[UIButton alloc]init];
+        [_savePhotoButton setTitle:@"保存" forState:UIControlStateNormal];
+        [_savePhotoButton.titleLabel setFont:[UIFont systemFontOfSize:14]];
+        [_savePhotoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_savePhotoButton addTarget:self action:@selector(clickSavePhotoButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    return _savePhotoButton;
+}
+
+
+- (UILabel *)showCurPhotoNum
+{
+    if(_showCurPhotoNum == nil)
+    {
+        _showCurPhotoNum = [[UILabel alloc]init];
+        _showCurPhotoNum.textColor = [UIColor whiteColor];
+        _showCurPhotoNum.font = [UIFont systemFontOfSize:14];
+        _showCurPhotoNum.text = @"1/1";
+    }
+
+    return _showCurPhotoNum;
+}
+
 
 
 

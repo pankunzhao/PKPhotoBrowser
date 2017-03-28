@@ -10,6 +10,8 @@
 #import "PKPhotoBrowserConfig.h"
 #import "UIImageView+WebCache.h"
 #import <Photos/Photos.h>
+#import "UIView+PKAdd.h"
+#import "UIView+WebCache.h"
 
 
 //1、图片缩放必须实现UIScrollViewDelegate的这两个方法：viewForZoomingInScrollView和 scrollViewDidEndZooming:withView:atScale:。
@@ -79,8 +81,27 @@ const CGFloat kDuration = 0.3f;
     self.longPressblock = longPressBlock;
     self.index = index;
     
+    [self.imageView sd_setShowActivityIndicatorView:YES];
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:urlStr] placeholderImage:nil];
 }
+
+
+#pragma mark - public
+
+- (void)savePhoto
+{
+    
+    if(!self.imageView.image)  return;
+    
+   [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+       //写入图片到相册
+       [PHAssetChangeRequest creationRequestForAssetFromImage:self.imageView.image];
+
+   } completionHandler:^(BOOL success, NSError * _Nullable error) {
+       NSLog(@"success = %d, error = %@", success, error);
+   }];
+}
+
 
 
 
@@ -200,15 +221,6 @@ const CGFloat kDuration = 0.3f;
            
            if(imgV.image == nil)
                return;
-           
-           [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-               
-               //写入图片到相册
-               [PHAssetChangeRequest creationRequestForAssetFromImage:imgV.image];
-               
-           } completionHandler:^(BOOL success, NSError * _Nullable error) {
-               NSLog(@"success = %d, error = %@", success, error);
-           }];
        }
     
 
@@ -248,7 +260,22 @@ const CGFloat kDuration = 0.3f;
             if(fabs(offsetY) >= HDImgVMoveDistance*0.5 )
             {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    self.longPressblock(imgV,UIGestureRecognizerStateEnded,YES);
+                    //执行动画
+                    CGPoint anmiatePoint;
+                    if(offsetY >=0)
+                    {
+                        anmiatePoint = CGPointMake(imgV.pk_centerX, imgV.pk_centerY - SCREEN_HEIGHT);
+                    }
+                    else
+                    {
+                        anmiatePoint = CGPointMake(imgV.pk_centerX, imgV.pk_centerY + SCREEN_HEIGHT);
+                    }
+                    
+                    [UIView animateWithDuration:0.3 animations:^{
+                        imgV.center = anmiatePoint;
+                    } completion:^(BOOL finished) {
+                         self.longPressblock(imgV,UIGestureRecognizerStateEnded,YES);
+                    }];
                 });
             }
             else
@@ -263,20 +290,6 @@ const CGFloat kDuration = 0.3f;
     }
 
 }
-
-//- (void)saveImageToPhotos:(UIImage*)savedImage {
-//    UIImageWriteToSavedPhotosAlbum(savedImage,
-//                                   self,
-//                                   @selector(image:didFinishSavingWithError:contextInfo:),
-//                                   NULL);
-//}
-//
-//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error
-//  contextInfo:(void *)contextInfo {
-//
-//    NSLog(@"--->保存图片成功");
-//}
-
 
 - (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center{
     CGRect zoomRect;

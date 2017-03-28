@@ -33,8 +33,6 @@
 //if ([deviceString isEqualToString:@"iPhone8,2"])    return @"iPhone 6s Plus";
 
 
-
-
 + (NSString *) pixelVlaueToPoint:(CGPoint)point
 {
     

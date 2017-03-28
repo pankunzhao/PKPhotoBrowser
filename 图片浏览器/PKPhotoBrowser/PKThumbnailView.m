@@ -11,6 +11,7 @@
 #import "PKPhotoBrowserConfig.h"
 #import "UIImageView+WebCache.h"
 #import "NSString+PKAdd.h"
+#import "UIView+WebCache.h"
 
 @interface PKThumbnailView ()
 
@@ -105,6 +106,7 @@
 #warning  SDWebimgV 进行网络加载图片
         //imgV.image = [UIImage imageNamed:[NSString stringWithFormat:@"%d.png",(int)idx + 1]];
         
+        [imgV sd_setShowActivityIndicatorView:YES];
         [imgV sd_setImageWithURL:[NSURL URLWithString:urlStr] placeholderImage:nil];
         
     

@@ -38,5 +38,11 @@
 }
 
 
+- (void)savePhoto
+{
+    [self.HDImagItem savePhoto];
+}
+
+
 
 @end

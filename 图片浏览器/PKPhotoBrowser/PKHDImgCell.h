@@ -19,7 +19,10 @@
                    thumbImg:(UIImage *)thumbImage
                       index:(int) index
                    tapBlock:(tapImgVBlock) block
-             longPressBlock:(longPressImgVBlock) longPreBlock
-;
+             longPressBlock:(longPressImgVBlock) longPreBlock;
+
+- (void)savePhoto;
+
+
 
 @end

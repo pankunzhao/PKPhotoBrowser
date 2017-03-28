@@ -49,7 +49,18 @@
 #define PageControlY    567
 #define HDImgVMoveDistance  100
 
+//设置label
+#define ScreenScaleH       [UIScreen mainScreen].bounds.size.height/667
+#define ScreenScaleW       [UIScreen mainScreen].bounds.size.width/375
 
+#define ShowCurPhotoIndexW  70
+#define ShowCurPhotoIndexH  35
+#define SavePhotoBtnW       70
+
+
+
+
+#define DLog( s, ... ) NSLog( @"< %@:(%d) > %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
 
 
 
